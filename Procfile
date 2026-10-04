@@ -1,1 +1,1 @@
-worker: hermes gateway run
+web: hermes gateway run
