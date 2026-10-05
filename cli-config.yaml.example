@@ -111,6 +111,13 @@ model:
   # api_key: "your-key-here"  # Uncomment to set here instead of .env
   base_url: "https://router.bynara.id/v1"
 
+# Tool Search: keep tools directly available to the model.
+# This avoids an extra tool_search -> describe/call hop for built-in tools
+# such as session_search.
+tools:
+  tool_search:
+    enabled: off
+
   # Stream API responses from the provider (default: true). The agent core
   # prefers streaming for every turn — subagents included — for liveness
   # health-checking. Set false to force non-streaming requests for the whole
