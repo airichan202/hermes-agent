@@ -1746,6 +1746,9 @@ class APIServerAdapter(OpenAICompatRoutesMixin, BasePlatformAdapter):
         """(method, path, handler) rows registered by ``connect()`` (a method so multiplex tests
         can assert the /p/<profile>/ mirrors without a listener)."""
         routes: List[tuple] = [
+            # Skalo compatibility: its active health probe is currently requesting "/".
+            # Reuse the same lightweight liveness handler as /health.
+            ("GET", "/", self._handle_health),
             ("GET", "/health", self._handle_health),
             ("GET", "/health/detailed", self._handle_health_detailed),
             ("GET", "/v1/health", self._handle_health),
