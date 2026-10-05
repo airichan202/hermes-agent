@@ -8,6 +8,65 @@ past that); see the **routing table** at the end and read the area file before e
 **Never give up on the right solution.**
 
 ## What Hermes Is
+## Airichan / Skalo Deployment Context
+
+This repository is a customized Hermes Agent fork deployed as a production-style gateway on Skalo.
+
+### Runtime
+- Deployment platform: Skalo
+- App name: `hermes-agent`
+- Git branch: `main`
+- Container lifecycle entrypoint:
+  `/opt/hermes/docker/entrypoint-dispatch.sh`
+- Gateway command:
+  `gateway run`
+- Health endpoint:
+  `GET /health`
+- API server listens on:
+  `0.0.0.0:3000`
+
+### AI Provider
+- Provider type: custom OpenAI-compatible provider
+- Base URL: `https://router.bynara.id/v1`
+- Active model: `combo/untukhermes`
+- `combo/untukhermes` is a NaraRouter fallback combo.
+- Do not replace the combo with individual upstream models unless explicitly requested.
+- API credentials are stored as deployment secrets and must never be committed or exposed.
+
+### Discord
+- Discord platform is enabled.
+- Home channel is configured through deployment environment variables.
+- Primary Discord home channel: `#general`
+- Do not repeatedly instruct the user to run `/sethome` when the configured home channel is already working.
+- Discord message handling may require thread permissions.
+- Required Discord thread permissions include creating public threads and sending messages in threads.
+
+### Working Deployment Rules
+- Treat the current Skalo deployment as working unless logs provide evidence otherwise.
+- Do not change the health endpoint, Docker entrypoint, model provider, or working environment variables without evidence that the current configuration is the cause of a problem.
+- Never expose API keys, bot tokens, or other secrets in source code, commits, logs, screenshots, or responses.
+- Prefer the smallest change that fixes the demonstrated failure.
+- After a deployment-affecting source change, verify that the new deployment becomes healthy before declaring success.
+- Do not repeat a configuration change that has already been verified successfully.
+
+### Troubleshooting
+Use an evidence-first workflow:
+1. Identify the exact failure layer.
+2. Inspect current logs and configuration.
+3. Reproduce or isolate the failure.
+4. Form a small set of concrete hypotheses.
+5. Make the smallest diagnostic or corrective change.
+6. Deploy only when a source/config change is actually required.
+7. Verify the real runtime path.
+8. If the approach fails, pivot to a different approach instead of repeating it.
+
+### Current Hermes Customizations
+- `SOUL.md` contains the customized Hermes identity and behavior.
+- `skills/technical-troubleshooting/SKILL.md` provides the project troubleshooting workflow.
+- Persistent user memory is enabled.
+- NaraRouter is the intended model gateway for this deployment.
+- The successful request path is:
+  `Discord → Hermes → custom provider → NaraRouter → combo/untukhermes → AI model → Hermes → Discord`
 
 Hermes is a personal AI agent that runs the same agent core across a CLI, a messaging
 gateway (Telegram, Discord, Slack, ~20 platforms), a TUI, and an Electron desktop app. It
